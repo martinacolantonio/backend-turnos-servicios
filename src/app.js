@@ -1,18 +1,15 @@
 import express from 'express';
 import servicesRouter from './routes/services.router.js';
+import bookingsRouter from './routes/bookings.router.js';
 
 const app = express();
 
-// Middlewares para parsear JSON
+// Middlewares esenciales para que el servidor procese JSON y datos de URL
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Endpoints / Rutas
+// Definición de las rutas principales de la API
 app.use('/api/services', servicesRouter);
-
-// Ruta base por si entran a la raíz
-app.get('/', (req, res) => {
-    res.json({ message: 'Bienvenido a la API del Sistema de Turnos y Reservas' });
-});
+app.use('/api/bookings', bookingsRouter);
 
 export default app;
