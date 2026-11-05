@@ -1,0 +1,6 @@
+<h1>Disponibilidad y Reservas</h1>
+<ul id="bookings-list">
+    {{#each bookings}}
+        <li>Reserva: {{this.clientName}} - Estado: {{this.status}}</li>
+    {{/each}}
+</ul>

@@ -8,7 +8,7 @@ const serviceSchema = new mongoose.Schema({
     duration: { type: Number, required: true },
     price: { type: Number, required: true },
     category: { type: String, required: true },
-    available: { type: Boolean, required: true, default: true }
+    available: { type: Boolean, default: true }
 });
 
 export const serviceModel = mongoose.model(serviceCollection, serviceSchema);

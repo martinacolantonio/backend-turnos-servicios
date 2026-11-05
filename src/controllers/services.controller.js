@@ -1,62 +1,28 @@
-import ServicesService from '../services/services.service.js';
+import { ServiceService } from '../services/service.service.js';
 
-const servicesService = new ServicesService();
+const serviceService = new ServiceService();
 
-export const getServices = async (req, res) => {
+export const getServicesController = async (req, res) => {
     try {
-        const services = await servicesService.getServices(req.query);
-        res.json({ status: 'success', payload: services });
+        const services = await serviceService.getServices();
+        res.status(200).json({ status: 'success', payload: services });
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });
     }
 };
 
-export const getServiceById = async (req, res) => {
+export const createServiceController = async (req, res) => {
     try {
-        const { sid } = req.params;
-        const service = await servicesService.getServiceById(sid);
-        if (!service) {
-            return res.status(404).json({ status: 'error', message: 'Servicio no encontrado' });
+        const newService = await serviceService.createService(req.body);
+        
+        // Si tienes Socket.io configurado, aquí puedes disparar la actualización en tiempo real:
+        const io = req.app.get('socketio');
+        if (io) {
+            const updatedList = await serviceService.getServices();
+            io.emit('update_services', updatedList);
         }
-        res.json({ status: 'success', payload: service });
-    } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
-    }
-};
 
-export const createService = async (req, res) => {
-    try {
-        const newService = await servicesService.createService(req.body);
-        if (!newService) {
-            return res.status(400).json({ status: 'error', message: 'Datos incompletos o inválidos para el servicio' });
-        }
         res.status(201).json({ status: 'success', payload: newService });
-    } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
-    }
-};
-
-export const updateService = async (req, res) => {
-    try {
-        const { sid } = req.params;
-        const updatedService = await servicesService.updateService(sid, req.body);
-        if (!updatedService) {
-            return res.status(404).json({ status: 'error', message: 'Servicio no encontrado para actualizar' });
-        }
-        res.json({ status: 'success', payload: updatedService });
-    } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
-    }
-};
-
-export const deleteService = async (req, res) => {
-    try {
-        const { sid } = req.params;
-        const deletedService = await servicesService.deleteService(sid);
-        if (!deletedService) {
-            return res.status(404).json({ status: 'error', message: 'Servicio no encontrado para eliminar' });
-        }
-        res.json({ status: 'success', payload: deletedService });
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });
     }

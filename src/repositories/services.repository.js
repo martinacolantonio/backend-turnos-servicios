@@ -1,25 +1,25 @@
-import ServicesDao from '../dao/services.dao.js';
+import ServiceDao from '../dao/service.dao.js';
 
-const servicesDao = new ServicesDao();
+const serviceDao = new ServiceDao();
 
 export default class ServicesRepository {
     async getAll() {
-        return await servicesDao.getAll();
+        return await serviceDao.getAll();
     }
 
     async getById(id) {
-        return await servicesDao.getById(id);
+        return await serviceDao.getById(id);
     }
 
-    async create(serviceData) {
-        return await servicesDao.create(serviceData);
+    async create(data) {
+        return await serviceDao.create(data);
     }
 
-    async update(id, updatedData) {
-        return await servicesDao.update(id, updatedData);
+    async update(id, data) {
+        return await serviceDao.update(id, data);
     }
 
     async delete(id) {
-        return await servicesDao.delete(id);
+        return await serviceDao.delete(id);
     }
 }
