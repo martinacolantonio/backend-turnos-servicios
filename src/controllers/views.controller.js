@@ -1,31 +1,28 @@
-import ServicesService from '../services/services.service.js';
+import productService from '../services/services.service.js';
+import bookingService from '../services/bookings.service.js';
 
-const servicesService = new ServicesService();
-
-export const renderServices = async (req, res) => {
+export const renderServicesView = async (req, res) => {
     try {
-        // Traemos los servicios reales desde MongoDB a través del servicio
-        const services = await servicesService.getServices();
-
-        res.render('services', { 
+        const services = await productService.getAllServices(); 
+        res.render('services', {
             title: 'Listado de Servicios',
-            services 
+            services: services.map(s => s.toObject ? s.toObject() : s)
         });
     } catch (error) {
-        res.status(500).send({ error: error.message });
+        console.error("Error:", error);
+        res.status(500).send("Error interno del servidor");
     }
 };
 
-export const renderAvailability = async (req, res) => {
+export const renderAvailabilityView = async (req, res) => {
     try {
-        // Si ya tenés el bookingService, lo importás acá. Por ahora pasamos un array o datos reales.
-        const bookings = []; 
-
-        res.render('availability', { 
-            title: 'Disponibilidad y Reservas',
-            bookings 
+        const availabilityData = await bookingService.getAllBookings ? await bookingService.getAllBookings() : [];
+        res.render('availability', {
+            title: 'Disponibilidad',
+            availability: availabilityData.map(a => a.toObject ? a.toObject() : a)
         });
     } catch (error) {
-        res.status(500).send({ error: error.message });
+        console.error("Error:", error);
+        res.status(500).send("Error interno del servidor");
     }
 };

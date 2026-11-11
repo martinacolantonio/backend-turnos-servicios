@@ -2,10 +2,8 @@ import ServicesRepository from '../repositories/services.repository.js';
 
 const servicesRepository = new ServicesRepository();
 
-export default class ServicesService {
+class ServicesService {
     async getServices(query = {}) {
-        // Opcional: podrías pasarle la query directo al repository/DAO para que filtre la BD, 
-        // pero si lo hacés acá, nos aseguramos de que traiga todo de MongoDB:
         let services = await servicesRepository.getAll();
 
         if (query.category) {
@@ -19,6 +17,10 @@ export default class ServicesService {
         return services;
     }
 
+    async getAllServices(query = {}) {
+        return await this.getServices(query);
+    }
+
     async getServiceById(id) {
         return await servicesRepository.getById(id);
     }
@@ -30,7 +32,6 @@ export default class ServicesService {
             throw new Error("Faltan campos obligatorios para crear el servicio");
         }
 
-        // ❌ QUITAMOS el `id: Date.now().toString()` porque MongoDB usa su propio `_id`
         const newService = {
             name,
             description,
@@ -44,7 +45,6 @@ export default class ServicesService {
     }
 
     async updateService(id, updatedData) {
-        // Nos aseguramos de que no intenten modificar el id de mongo
         delete updatedData._id;
         delete updatedData.id;
         return await servicesRepository.update(id, updatedData);
@@ -54,3 +54,6 @@ export default class ServicesService {
         return await servicesRepository.delete(id);
     }
 }
+
+// 👇 IMPORTANTE: Exportamos una instancia de la clase, no la clase en sí
+export default new ServicesService();

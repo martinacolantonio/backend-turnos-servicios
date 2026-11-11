@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { renderServices, renderAvailability } from '../controllers/views.controller.js';
+import { renderServicesView, renderAvailabilityView } from '../controllers/views.controller.js';
 
 const router = Router();
 
-router.get('/services', renderServices);
-router.get('/availability', renderAvailability);
+router.get('/services', renderServicesView);
+router.get('/availability', renderAvailabilityView);
+// Si prefieres usar bookings: router.get('/bookings', renderAvailabilityView);
 
 export default router;

@@ -1,6 +1,14 @@
-<h1>Disponibilidad y Reservas</h1>
-<ul id="bookings-list">
-    {{#each bookings}}
-        <li>Reserva: {{this.clientName}} - Estado: {{this.status}}</li>
-    {{/each}}
-</ul>
+<section class="availability-section">
+    <h1>Disponibilidad de Turnos</h1>
+    
+    <ul id="availability-list">
+        {{#each availability}}
+            <li>
+                <span>{{this.date}} - {{this.timeSlot}}</span>
+                <span>Estado: <strong>{{this.status}}</strong></span>
+            </li>
+        {{else}}
+            <li>No hay información de disponibilidad en este momento.</li>
+        {{/each}}
+    </ul>
+</section>

@@ -1,8 +1,6 @@
-import mongoose from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-const serviceCollection = 'services';
-
-const serviceSchema = new mongoose.Schema({
+const serviceSchema = new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     duration: { type: Number, required: true },
@@ -11,4 +9,5 @@ const serviceSchema = new mongoose.Schema({
     available: { type: Boolean, default: true }
 });
 
-export const serviceModel = mongoose.model(serviceCollection, serviceSchema);
+export const serviceModel = model('services', serviceSchema);
+export default serviceModel;

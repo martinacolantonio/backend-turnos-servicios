@@ -1,14 +1,18 @@
-<h1>Listado de Servicios</h1>
-<div id="services-container">
-    <ul>
+<section class="services-section">
+    <h1>Listado de Servicios</h1>
+    
+    <div id="services-container" class="services-grid">
         {{#each services}}
-            <li>
+            <div class="service-card" id="service-{{this._id}}">
                 <h3>{{this.name}}</h3>
                 <p>{{this.description}}</p>
-                <p><strong>Duración:</strong> {{this.duration}} mins</p>
+                <p><strong>Duración:</strong> {{this.duration}} min</p>
                 <p><strong>Precio:</strong> ${{this.price}}</p>
                 <p><strong>Categoría:</strong> {{this.category}}</p>
-            </li>
+                <p><strong>Disponibilidad:</strong> {{#if this.available}}Disponible{{else}}No disponible{{/if}}</p>
+            </div>
+        {{else}}
+            <p>No hay servicios cargados actualmente.</p>
         {{/each}}
-    </ul>
-</div>
+    </div>
+</section>
