@@ -11,7 +11,7 @@ const router = Router();
 
 router.get('/', getServices);
 router.get('/:sid', getServiceById);
-router.post('/', createService);
+router.post('/', validateService, createService);
 router.put('/:sid', updateService);
 router.delete('/:sid', deleteService);
 
