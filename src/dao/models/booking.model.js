@@ -1,15 +1,18 @@
-import mongoose from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-const bookingCollection = 'bookings';
-
-const bookingSchema = new mongoose.Schema({
-    services: [{
-        service: { type: mongoose.Schema.Types.ObjectId, ref: 'services', required: true },
-        quantity: { type: Number, required: true, default: 1 }
-    }],
-    total: { type: Number, required: true },
-    status: { type: String, default: 'pending' },
-    createdAt: { type: Date, default: Date.now }
+const bookingSchema = new Schema({
+    client: { type: String, required: true },
+    email: { type: String, required: true },
+    date: { type: Date, required: true },
+    time: { type: String, required: true },
+    status: { type: String, default: 'Pendiente' },
+    services: [
+        {
+            service: { type: Schema.Types.ObjectId, ref: 'services', required: true },
+            quantity: { type: Number, required: true, default: 1 }
+        }
+    ]
 });
 
-export const bookingModel = mongoose.model(bookingCollection, bookingSchema);
+const Booking = model('bookings', bookingSchema);
+export default Booking;

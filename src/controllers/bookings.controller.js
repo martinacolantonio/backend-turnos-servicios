@@ -1,43 +1,47 @@
-import BookingsService from '../services/bookings.service.js';
-
-const bookingsService = new BookingsService();
-
-export const createBooking = async (req, res) => {
-    try {
-        const result = await bookingsService.createBooking(req.body);
-        if (result.error) {
-            return res.status(400).json({ status: 'error', message: result.error });
-        }
-        res.status(201).json({ status: 'success', payload: result });
-    } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
-    }
-};
+import Booking from '../dao/models/booking.model.js';
 
 export const getBookingById = async (req, res) => {
     try {
         const { bid } = req.params;
-        const booking = await bookingsService.getBookingById(bid);
+        const booking = await Booking.findById(bid).populate('services.service');
+
         if (!booking) {
-            return res.status(404).json({ status: 'error', message: 'Reserva no encontrada' });
+            return res.status(404).json({ 
+                status: 'error', 
+                message: 'Reserva no encontrada' 
+            });
         }
-        res.json({ status: 'success', payload: booking });
+
+        return res.status(200).json({ 
+            status: 'success', 
+            payload: booking 
+        });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
+        return res.status(500).json({ 
+            status: 'error', 
+            message: error.message 
+        });
     }
 };
 
-export const addServiceToBooking = async (req, res) => {
+export const createBooking = async (req, res) => {
     try {
-        const { bid, sid } = req.params;
-        const result = await bookingsService.addServiceToBooking(bid, sid);
-        
-        if (result.error) {
-            return res.status(404).json({ status: 'error', message: result.error });
-        }
-        
-        res.json({ status: 'success', payload: result });
+        const { client, email, date, time, services } = req.body;
+        const newBooking = await Booking.create({
+            client,
+            email,
+            date,
+            time,
+            services
+        });
+
+        return res.status(201).json({ 
+            status: 'success', 
+            payload: newBooking 
+        });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
+        return res.status(400).json({ 
+            status: 'error', 
+            message: error.message 
+        });
     }
-};

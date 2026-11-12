@@ -1,47 +1,50 @@
 import express from 'express';
-import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { engine } from 'express-handlebars';
 
-// Configuración de rutas para ES Modules
+import availabilityRouter from './routes/availability.router.js';
+import { renderServicesView, renderAvailabilityView } from './controllers/views.controller.js';
+
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Cargar variables de entorno
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Configuración del motor de plantillas Handlebars
-app.engine('handlebars', handlebars.engine());
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'handlebars');
+// Conexión a MongoDB Atlas
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('Base de datos conectada con éxito a MongoDB Atlas'))
+    .catch(error => console.error('Error al conectar a la base de datos:', error));
 
-// Middlewares para JSON y formularios
+// Configuración de Handlebars con la carpeta layouts explícita
+app.engine('handlebars', engine({
+    defaultLayout: 'main',
+    layoutsDir: path.join(__dirname, 'views/layouts')
+}));
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
+
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Archivos estáticos apuntando a la carpeta public en la raíz
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Importar las rutas de vistas y API (ajusta según tus archivos de rutas)
-import viewsRouter from './routes/views.router.js';
-app.use('/views', viewsRouter);
+// Rutas de API
+app.use('/api/availability', availabilityRouter);
 
-// Ruta raíz de redirección opcional
-app.get('/', (req, res) => {
-    res.redirect('/views/services');
+// Rutas de Vistas
+app.get('/', renderServicesView);
+app.get('/services', renderServicesView);
+app.get('/availability', renderAvailabilityView);
+
+// Iniciar servidor
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto http://localhost:${PORT}`);
 });
-
-// Conexión a MongoDB Atlas e inicio del servidor
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log('Conectado a la Base de Datos (MongoDB Atlas)');
-        app.listen(PORT, () => {
-            console.log(`Servidor corriendo en puerto ${PORT}`);
-        });
-    })
-    .catch((error) => {
-        console.error('Error al conectar a la base de datos:', error);
-    });
